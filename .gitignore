@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Large organizer reference datasets not used by the deployed UI.
+src/data/spotify_history.csv
+src/data/india_transactions.csv
+src/data/spotify_data_dictionary.csv
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

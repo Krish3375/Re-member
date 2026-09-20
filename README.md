@@ -1,75 +1,24 @@
-# React + TypeScript + Vite
+# RE:MEMBER
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+RE:MEMBER turns local digital traces into a quiet, editorial life story. It is a frontend-only WebRush hackathon experience: explore selected receipts, trace lightweight relationships, and inspect evidence behind generated chapters and insights.
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+`npm install` then `npm run dev`. Production checks: `npm run build` and `npm run lint`.
 
-## React Compiler
+## Architecture and data
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The React + Vite + TypeScript app loads the small household CSV only after **Uncover my life** is selected. A compact, safe Spotify excerpt is derived from organizer data at build time and embedded as a few normalized records, so the 21 MB Spotify history is neither downloaded nor placed in the JavaScript bundle. The small CSV is parsed directly in the browser; scoring and story generation remain entirely in the browser.
 
-## Expanding the ESLint configuration
+`src/data/engine.ts` normalizes safe fields, filters incomplete Spotify plays, selects a small display sample, scores temporal/tag relationships, and derives chapters and evidence. The app does not use `india_transactions.csv`: its sensitive fields do not support a safe single-person story.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Experience
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Searchable/filterable receipt explorer with keyboard-operable relationship tracing
+- SVG constellation, generated life chapters, and expandable evidence cards
+- Loading, empty, and error states; responsive layouts and reduced-motion support
+- Semantic sections, live result counts, visible keyboard focus, and safe React text rendering
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Privacy, security, and scope
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+No backend, APIs, database, telemetry, secrets, or uploads are used. No card numbers, DOBs, street addresses, customer IDs, names, or precise coordinates are rendered or derived. Data stays in the visitor's browser and is used only for the current page session. No HTML injection APIs are used.
