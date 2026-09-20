@@ -1,15 +1,241 @@
+// import { ArrowDown, LoaderCircle } from "lucide-react";
+// import { useState } from "react";
+// import ReceiptExplorer from "./components/explorer/ReceiptExplorer";
+// import { loadStory, type Story } from "./data/engine";
+// import DriftBackground from "./components/explorer/DriftBackground";
+// import "./App.css";
+
+// function App() {
+//   const [story, setStory] = useState<Story | null>(null);
+//   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+//   const [selectedId, setSelectedId] = useState<string | null>(null);
+//   const begin = async () => { setStatus("loading"); try { const next = await loadStory(); setStory(next); setStatus("idle"); requestAnimationFrame(() => document.querySelector<HTMLElement>("#explore")?.focus()); } catch { setStatus("error"); } };
+//   const links = story?.connections.filter((link) => link.sourceId === selectedId || link.targetId === selectedId) ?? [];
+//   return <main className="app"><section className="hero" aria-labelledby="page-title"><p className="eyebrow">RE:MEMBER / PERSONAL DATA STORY</p><h1 id="page-title">Your life<br />left receipts.</h1><p className="intro">Songs and purchases are small evidence of a life in motion—ready to be connected on your device.</p><button type="button" className="primary-button" onClick={begin} disabled={status === "loading"}>{status === "loading" ? <><LoaderCircle className="spin" aria-hidden="true" /> Reading your archive…</> : <>Uncover my life <ArrowDown aria-hidden="true" /></>}</button>{status === "error" && <p className="error" role="alert">The archive could not be read. Check that the dataset files are available, then try again.</p>}<div className="stats" aria-label="Life receipt summary"><div><strong>{story?.receipts.length ?? "—"}</strong><span>Fragments</span></div><div><strong>{story?.connections.length ?? "—"}</strong><span>Connections</span></div><div><strong>{story?.chapters.length ?? "—"}</strong><span>Stories</span></div></div></section>{story && <div className="story" id="explore" tabIndex={-1}><ReceiptExplorer receipts={story.receipts} selectedId={selectedId} onSelect={setSelectedId} /><section className="section constellation" aria-labelledby="constellation-title"><div className="section-heading"><p className="section-number">02 / CONNECT</p><h2 id="constellation-title">A constellation,<br />not a conclusion.</h2></div><div className="constellation-wrap"><svg viewBox="0 0 600 300" role="img" aria-label="Connections between selected life receipts" className="constellation-svg">{story.connections.slice(0, 20).map((link, index) => <line key={`${link.sourceId}-${link.targetId}`} x1={60 + (index % 6) * 95} y1={55 + (index % 3) * 80} x2={120 + ((index + 2) % 6) * 82} y2={80 + ((index + 1) % 3) * 76} />)}{story.receipts.slice(0, 16).map((receipt, index) => <circle key={receipt.id} className={receipt.id === selectedId ? "active" : ""} cx={60 + (index % 6) * 95} cy={55 + (index % 3) * 80} r="8" tabIndex={0} role="button" aria-label={`Select ${receipt.title}`} onClick={() => setSelectedId(receipt.id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedId(receipt.id); } }} />)}</svg><aside className="connection-detail" aria-live="polite"><p className="section-number">RELATIONSHIP TRACE</p><h3>{selectedId ? "What this fragment touches" : "Choose a fragment"}</h3><p>{selectedId ? `${links.length} meaningful links are visible in this sample.` : "Select a dot or use “Trace its connections” in the explorer."}</p>{links.slice(0, 3).map((link) => <small key={`${link.sourceId}-${link.targetId}`}>{link.reasons.join(" · ")}</small>)}</aside></div></section><section className="section chapters" aria-labelledby="chapters-title"><div className="section-heading"><p className="section-number">03 / CHAPTERS</p><h2 id="chapters-title">The shape of<br />an ordinary life.</h2></div><div className="chapter-list">{story.chapters.map((chapter) => <article key={chapter.id}><p className="chapter-range">{new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short" }).format(new Date(chapter.startDate))} — {new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short" }).format(new Date(chapter.endDate))}</p><h3>{chapter.title}</h3><p>{chapter.description}</p></article>)}</div></section><section className="section insights" aria-labelledby="insights-title"><div className="section-heading"><p className="section-number">04 / NOTICE</p><h2 id="insights-title">Hidden patterns,<br />held lightly.</h2></div><div className="insight-list">{story.insights.map((insight) => <details key={insight.title}><summary>{insight.title}<span aria-hidden="true">+</span></summary><p>{insight.body}</p><small>{insight.evidence}</small></details>)}</div></section><footer>Built from local organizer datasets. Nothing is sent anywhere.</footer></div>}</main>;
+// }
+// export default App;
+
 import { ArrowDown, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import ReceiptExplorer from "./components/explorer/ReceiptExplorer";
 import { loadStory, type Story } from "./data/engine";
+import DriftBackground from "./components/explorer/DriftBackground";
 import "./App.css";
 
 function App() {
   const [story, setStory] = useState<Story | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const begin = async () => { setStatus("loading"); try { const next = await loadStory(); setStory(next); setStatus("idle"); requestAnimationFrame(() => document.querySelector<HTMLElement>("#explore")?.focus()); } catch { setStatus("error"); } };
-  const links = story?.connections.filter((link) => link.sourceId === selectedId || link.targetId === selectedId) ?? [];
-  return <main className="app"><section className="hero" aria-labelledby="page-title"><p className="eyebrow">RE:MEMBER / PERSONAL DATA STORY</p><h1 id="page-title">Your life<br />left receipts.</h1><p className="intro">Songs and purchases are small evidence of a life in motion—ready to be connected on your device.</p><button type="button" className="primary-button" onClick={begin} disabled={status === "loading"}>{status === "loading" ? <><LoaderCircle className="spin" aria-hidden="true" /> Reading your archive…</> : <>Uncover my life <ArrowDown aria-hidden="true" /></>}</button>{status === "error" && <p className="error" role="alert">The archive could not be read. Check that the dataset files are available, then try again.</p>}<div className="stats" aria-label="Life receipt summary"><div><strong>{story?.receipts.length ?? "—"}</strong><span>Fragments</span></div><div><strong>{story?.connections.length ?? "—"}</strong><span>Connections</span></div><div><strong>{story?.chapters.length ?? "—"}</strong><span>Stories</span></div></div></section>{story && <div className="story" id="explore" tabIndex={-1}><ReceiptExplorer receipts={story.receipts} selectedId={selectedId} onSelect={setSelectedId} /><section className="section constellation" aria-labelledby="constellation-title"><div className="section-heading"><p className="section-number">02 / CONNECT</p><h2 id="constellation-title">A constellation,<br />not a conclusion.</h2></div><div className="constellation-wrap"><svg viewBox="0 0 600 300" role="img" aria-label="Connections between selected life receipts" className="constellation-svg">{story.connections.slice(0, 20).map((link, index) => <line key={`${link.sourceId}-${link.targetId}`} x1={60 + (index % 6) * 95} y1={55 + (index % 3) * 80} x2={120 + ((index + 2) % 6) * 82} y2={80 + ((index + 1) % 3) * 76} />)}{story.receipts.slice(0, 16).map((receipt, index) => <circle key={receipt.id} className={receipt.id === selectedId ? "active" : ""} cx={60 + (index % 6) * 95} cy={55 + (index % 3) * 80} r="8" tabIndex={0} role="button" aria-label={`Select ${receipt.title}`} onClick={() => setSelectedId(receipt.id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedId(receipt.id); } }} />)}</svg><aside className="connection-detail" aria-live="polite"><p className="section-number">RELATIONSHIP TRACE</p><h3>{selectedId ? "What this fragment touches" : "Choose a fragment"}</h3><p>{selectedId ? `${links.length} meaningful links are visible in this sample.` : "Select a dot or use “Trace its connections” in the explorer."}</p>{links.slice(0, 3).map((link) => <small key={`${link.sourceId}-${link.targetId}`}>{link.reasons.join(" · ")}</small>)}</aside></div></section><section className="section chapters" aria-labelledby="chapters-title"><div className="section-heading"><p className="section-number">03 / CHAPTERS</p><h2 id="chapters-title">The shape of<br />an ordinary life.</h2></div><div className="chapter-list">{story.chapters.map((chapter) => <article key={chapter.id}><p className="chapter-range">{new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short" }).format(new Date(chapter.startDate))} — {new Intl.DateTimeFormat(undefined, { year: "numeric", month: "short" }).format(new Date(chapter.endDate))}</p><h3>{chapter.title}</h3><p>{chapter.description}</p></article>)}</div></section><section className="section insights" aria-labelledby="insights-title"><div className="section-heading"><p className="section-number">04 / NOTICE</p><h2 id="insights-title">Hidden patterns,<br />held lightly.</h2></div><div className="insight-list">{story.insights.map((insight) => <details key={insight.title}><summary>{insight.title}<span aria-hidden="true">+</span></summary><p>{insight.body}</p><small>{insight.evidence}</small></details>)}</div></section><footer>Built from local organizer datasets. Nothing is sent anywhere.</footer></div>}</main>;
+
+  const begin = async () => {
+    setStatus("loading");
+    try {
+      const next = await loadStory();
+      setStory(next);
+      setStatus("idle");
+      requestAnimationFrame(() =>
+        document.querySelector<HTMLElement>("#explore")?.focus()
+      );
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const links =
+    story?.connections.filter(
+      (link) => link.sourceId === selectedId || link.targetId === selectedId
+    ) ?? [];
+
+  return (
+    <>
+      <DriftBackground />
+      <main className="app" style={{ position: "relative", zIndex: 1 }}>
+        <section className="hero" aria-labelledby="page-title">
+          <p className="eyebrow">RE:MEMBER / PERSONAL DATA STORY</p>
+          <h1 id="page-title">
+            Your life
+            <br />
+            left receipts.
+          </h1>
+          <p className="intro">
+            Songs and purchases are small evidence of a life in motion—ready to
+            be connected on your device.
+          </p>
+          <button
+            type="button"
+            className="primary-button"
+            onClick={begin}
+            disabled={status === "loading"}
+          >
+            {status === "loading" ? (
+              <>
+                <LoaderCircle className="spin" aria-hidden="true" /> Reading
+                your archive…
+              </>
+            ) : (
+              <>
+                Uncover my life <ArrowDown aria-hidden="true" />
+              </>
+            )}
+          </button>
+          {status === "error" && (
+            <p className="error" role="alert">
+              The archive could not be read. Check that the dataset files are
+              available, then try again.
+            </p>
+          )}
+          <div className="stats" aria-label="Life receipt summary">
+            <div>
+              <strong>{story?.receipts.length ?? "—"}</strong>
+              <span>Fragments</span>
+            </div>
+            <div>
+              <strong>{story?.connections.length ?? "—"}</strong>
+              <span>Connections</span>
+            </div>
+            <div>
+              <strong>{story?.chapters.length ?? "—"}</strong>
+              <span>Stories</span>
+            </div>
+          </div>
+        </section>
+
+        {story && (
+          <div className="story" id="explore" tabIndex={-1}>
+            <ReceiptExplorer
+              receipts={story.receipts}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+            />
+
+            <section
+              className="section constellation"
+              aria-labelledby="constellation-title"
+            >
+              <div className="section-heading">
+                <p className="section-number">02 / CONNECT</p>
+                <h2 id="constellation-title">
+                  A constellation,
+                  <br />
+                  not a conclusion.
+                </h2>
+              </div>
+              <div className="constellation-wrap">
+                <svg
+                  viewBox="0 0 600 300"
+                  role="img"
+                  aria-label="Connections between selected life receipts"
+                  className="constellation-svg"
+                >
+                  {story.connections.slice(0, 20).map((link, index) => (
+                    <line
+                      key={`${link.sourceId}-${link.targetId}`}
+                      x1={60 + (index % 6) * 95}
+                      y1={55 + (index % 3) * 80}
+                      x2={120 + ((index + 2) % 6) * 82}
+                      y2={80 + ((index + 1) % 3) * 76}
+                    />
+                  ))}
+                  {story.receipts.slice(0, 16).map((receipt, index) => (
+                    <circle
+                      key={receipt.id}
+                      className={receipt.id === selectedId ? "active" : ""}
+                      cx={60 + (index % 6) * 95}
+                      cy={55 + (index % 3) * 80}
+                      r="8"
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Select ${receipt.title}`}
+                      onClick={() => setSelectedId(receipt.id)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setSelectedId(receipt.id);
+                        }
+                      }}
+                    />
+                  ))}
+                </svg>
+                <aside className="connection-detail" aria-live="polite">
+                  <p className="section-number">RELATIONSHIP TRACE</p>
+                  <h3>
+                    {selectedId ? "What this fragment touches" : "Choose a fragment"}
+                  </h3>
+                  <p>
+                    {selectedId
+                      ? `${links.length} meaningful links are visible in this sample.`
+                      : "Select a dot or use “Trace its connections” in the explorer."}
+                  </p>
+                  {links.slice(0, 3).map((link) => (
+                    <small key={`${link.sourceId}-${link.targetId}`}>
+                      {link.reasons.join(" · ")}
+                    </small>
+                  ))}
+                </aside>
+              </div>
+            </section>
+
+            <section className="section chapters" aria-labelledby="chapters-title">
+              <div className="section-heading">
+                <p className="section-number">03 / CHAPTERS</p>
+                <h2 id="chapters-title">
+                  The shape of
+                  <br />
+                  an ordinary life.
+                </h2>
+              </div>
+              <div className="chapter-list">
+                {story.chapters.map((chapter) => (
+                  <article key={chapter.id}>
+                    <p className="chapter-range">
+                      {new Intl.DateTimeFormat(undefined, {
+                        year: "numeric",
+                        month: "short",
+                      }).format(new Date(chapter.startDate))}{" "}
+                      —{" "}
+                      {new Intl.DateTimeFormat(undefined, {
+                        year: "numeric",
+                        month: "short",
+                      }).format(new Date(chapter.endDate))}
+                    </p>
+                    <h3>{chapter.title}</h3>
+                    <p>{chapter.description}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="section insights" aria-labelledby="insights-title">
+              <div className="section-heading">
+                <p className="section-number">04 / NOTICE</p>
+                <h2 id="insights-title">
+                  Hidden patterns,
+                  <br />
+                  held lightly.
+                </h2>
+              </div>
+              <div className="insight-list">
+                {story.insights.map((insight) => (
+                  <details key={insight.title}>
+                    <summary>
+                      {insight.title}
+                      <span aria-hidden="true">+</span>
+                    </summary>
+                    <p>{insight.body}</p>
+                    <small>{insight.evidence}</small>
+                  </details>
+                ))}
+              </div>
+            </section>
+
+            <footer>
+              Built from local organizer datasets. Nothing is sent anywhere.
+            </footer>
+          </div>
+        )}
+      </main>
+    </>
+  );
 }
+
 export default App;
